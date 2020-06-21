@@ -166,9 +166,22 @@ public class JwServiceImpl implements JwService {
 			}
 			for (int i = 1; i < 6; i++) {
 				Elements kbcontent = trs.get(i).getElementsByClass("kbcontent");
+
 				for (int j = 0; j < 7; j++) {
 					Elements elements = kbcontent.get(j).select("font");
 					String courseName = kbcontent.get(j).ownText();
+					if (j == 0) {
+						if (!"".equals(courseName)) {
+							WeekCourse weekCourse = new WeekCourse();
+							weekCourse.setCourseName(courseName);
+							weekCourse.setTeacher(elements.select("[title=老师]").text().split("（")[0]);
+							weekCourse.setAddress(elements.select("[title=教室]").text());
+							weekCourse.setTime(elements.select("[title=周次(节次)]").text());
+							weekCourses[i - 1][6] = weekCourse;
+						}
+						continue;
+					}
+
 					if (!"".equals(courseName)) {
 						WeekCourse weekCourse = new WeekCourse();
 						weekCourse.setCourseName(courseName);
@@ -176,7 +189,7 @@ public class JwServiceImpl implements JwService {
 						weekCourse.setAddress(elements.select("[title=教室]").text());
 						weekCourse.setTime(elements.select("[title=周次(节次)]").text());
 
-						weekCourses[i - 1][j] = weekCourse;
+						weekCourses[i - 1][j - 1] = weekCourse;
 
 					}
 				}
@@ -191,7 +204,7 @@ public class JwServiceImpl implements JwService {
 	}
 
 	@Override
-	public ReturnData login(HttpServletRequest request, String username, String password,String agent) {
+	public ReturnData login(HttpServletRequest request, String username, String password, String agent) {
 		try {
 			String[] jwCode = getJwCode();
 			String encoded = encodePsd(username, password, jwCode[1]);
@@ -256,7 +269,7 @@ public class JwServiceImpl implements JwService {
 						List<LoginInfo> loginInfos = (List<LoginInfo>) redisUtil.getObject(ScheduledTasks.LOGIN_INFO_PREFIX);
 						LoginInfo loginInfo = LoginInfo.builder().userId(stuInfo.getId()).loginTime(new Date()).agent(agent).build();
 						loginInfos.add(loginInfo);
-						redisUtil.setObject(ScheduledTasks.LOGIN_INFO_PREFIX,loginInfos);
+						redisUtil.setObject(ScheduledTasks.LOGIN_INFO_PREFIX, loginInfos);
 						redisUtil.set(USER_TOKEN_PREFIX + token, String.valueOf(stuInfo.getId()), TOKEN_EXPIRE);
 						redisUtil.set(USER_ID_PREFIX + stuInfo.getId(), token, TOKEN_EXPIRE);
 						redisUtil.set(USER_STUID_PREFIX + stuInfo.getId(), stuInfo.getStuId(), TOKEN_EXPIRE);
@@ -363,7 +376,7 @@ public class JwServiceImpl implements JwService {
 				.add("kcxz", "")
 				.add("kmmc", "")
 				.add("xsfs", "all")
-				.add("fxkc","2")
+				.add("fxkc", "2")
 				.build();
 		Request queryScoreRequest = new Request.Builder()
 				.url(url)
@@ -401,7 +414,7 @@ public class JwServiceImpl implements JwService {
 							score.setScore(tds.get(j).text());
 							Elements a = tds.get(j).select("a");
 							String href = a.attr("href");
-							if(href != null && !"".equals(href)){
+							if (href != null && !"".equals(href)) {
 								String[] split = href.split("'");
 								score.setPscjUrl(split[1]);
 							}
@@ -451,7 +464,7 @@ public class JwServiceImpl implements JwService {
 	public ReturnData queryPscj(HttpServletRequest request, String cookie, String pscjUrl) {
 		OkHttpClient okHttpClient = new OkHttpClient();
 		Request jwPscjQueryRequest = new Request.Builder()
-				.header("Cookie",cookie)
+				.header("Cookie", cookie)
 				.url("http://xk.csust.edu.cn" + pscjUrl)
 				.build();
 
@@ -472,7 +485,7 @@ public class JwServiceImpl implements JwService {
 			pscjInfo.setScore(tds.get(9).ownText());
 			return ReturnData.success(pscjInfo);
 		} catch (Exception e) {
-			throw new BaseException(CodeEnum.REQUEST_FAILED.getCode(),"请求错误");
+			throw new BaseException(CodeEnum.REQUEST_FAILED.getCode(), "请求错误");
 		}
 
 	}
@@ -522,7 +535,7 @@ public class JwServiceImpl implements JwService {
 		for (int i = nowWeekDate[0]; i >= 1; i--) {
 			WeekDay weekDayTemp = new WeekDay();
 			weekDayTemp.setWeekId(i);
-			weekDayTemp.setWeekMonStr(CalendarUtil.getDateOfDesignDay(monDate, daySdf, index  * -1 * 7));
+			weekDayTemp.setWeekMonStr(CalendarUtil.getDateOfDesignDay(monDate, daySdf, index * -1 * 7));
 			index++;
 			weekDays.add(weekDayTemp);
 		}
@@ -541,7 +554,6 @@ public class JwServiceImpl implements JwService {
 	public static void main(String[] args) {
 
 	}
-
 
 
 	@Override
@@ -772,6 +784,8 @@ public class JwServiceImpl implements JwService {
 				}
 				index++;
 			}
+
+			stuInfo.setRegisterTime(new Date());
 			return stuInfo;
 		} catch (Exception e) {
 			throw new BaseException(CodeEnum.JW_SYSTEM_ERROR.getCode(), "教务系统无响应");

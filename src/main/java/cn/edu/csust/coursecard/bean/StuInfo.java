@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * @author zsw
  * @date 2019/11/18 21:13
@@ -20,4 +22,5 @@ public class StuInfo {
     private String college;
     private String major;
     private String className;
+    private Date registerTime;
 }
