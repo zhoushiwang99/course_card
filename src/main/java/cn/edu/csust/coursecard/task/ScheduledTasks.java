@@ -24,27 +24,25 @@ public class ScheduledTasks {
 	@Autowired
 	LoginInfoDAO loginInfoDAO;
 
-
 	public static String LOGIN_INFO_PREFIX = "login:list";
 
-
-    @Scheduled(cron = "0 0 1 * * ?")
-    public void test(){
-	    Object obj = redisUtill.getObject(LOGIN_INFO_PREFIX);
-	    if(obj != null){
-		    List<LoginInfo> loginInfos = (List<LoginInfo>) obj;
-	    	loginInfoDAO.insertLoginInfos(loginInfos);
-	    	loginInfos.clear();
-		    redisUtill.setObject(LOGIN_INFO_PREFIX,loginInfos);
-	    }
-    }
-
-    @Scheduled(initialDelay = 0,fixedDelay = 1000 * 60 * 60 * 24)
-    public void test1(){
-	    System.out.println("登录信息列表初始化");
-		if(redisUtill.getObject(LOGIN_INFO_PREFIX) == null){
-			List<LoginInfo> loginInfos = new LinkedList<>();
-			redisUtill.setObject(LOGIN_INFO_PREFIX,loginInfos);
+	@Scheduled(cron = "0 0 1 * * ?")
+	public void test() {
+		Object obj = redisUtill.getObject(LOGIN_INFO_PREFIX);
+		if (obj != null) {
+			List<LoginInfo> loginInfos = (List<LoginInfo>) obj;
+			loginInfoDAO.insertLoginInfos(loginInfos);
+			loginInfos.clear();
+			redisUtill.setObject(LOGIN_INFO_PREFIX, loginInfos);
 		}
-    }
+	}
+
+	@Scheduled(initialDelay = 0, fixedDelay = 1000 * 60 * 60 * 24)
+	public void test1() {
+		System.out.println("登录信息列表初始化");
+		if (redisUtill.getObject(LOGIN_INFO_PREFIX) == null) {
+			List<LoginInfo> loginInfos = new LinkedList<>();
+			redisUtill.setObject(LOGIN_INFO_PREFIX, loginInfos);
+		}
+	}
 }
