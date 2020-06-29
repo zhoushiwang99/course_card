@@ -61,6 +61,8 @@ my:
       - /apk/**
   image:
 #    default-head-direct: D:\img\coursecard\defaultHead\
+    ##默认头像文件夹
     default-head-direct: /home/zyh/course_card/img/defaultHead/
 #    head-image-direct: D:\img\coursecard\headImg\
+    ##自定义头像文件夹
     head-image-direct: /home/zyh/course_card/img/headImg/
