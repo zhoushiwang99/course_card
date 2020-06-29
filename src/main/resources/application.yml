@@ -1,0 +1,66 @@
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 500MB
+  redis:
+    port: 6379
+    host: 47.106.159.165
+    timeout: 1000
+    password: 123456
+  session:
+    store-type: none
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://47.106.159.165:3306/course_card?useUnDruidDataSourceicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    filters: stat,wall
+    maxPoolPreparedStatementPerConnectionSize: 20
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+  mvc:
+    throw-exception-if-no-handler-found: true
+
+  resources:
+    add-mappings: false
+
+server:
+  port: 8081
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+my:
+  config:
+    include-uri:
+      - /**
+    exclude-uri:
+      - /login
+      - /getLastVersion
+      - /apk/**
+  image:
+#    default-head-direct: D:\img\coursecard\defaultHead\
+    default-head-direct: /home/zyh/course_card/img/defaultHead/
+#    head-image-direct: D:\img\coursecard\headImg\
+    head-image-direct: /home/zyh/course_card/img/headImg/
