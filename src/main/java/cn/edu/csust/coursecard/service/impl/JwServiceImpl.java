@@ -463,6 +463,7 @@ public class JwServiceImpl implements JwService {
 	@Override
 	public ReturnData queryPscj(HttpServletRequest request, String cookie, String pscjUrl) {
 		OkHttpClient okHttpClient = new OkHttpClient();
+		HashMap<String, Integer> map = new HashMap<>();
 		Request jwPscjQueryRequest = new Request.Builder()
 				.header("Cookie", cookie)
 				.url("http://xk.csust.edu.cn" + pscjUrl)
@@ -475,14 +476,69 @@ public class JwServiceImpl implements JwService {
 			Document document = Jsoup.parse(htmlText);
 			Elements elements = document.select("#dataList");
 			Elements trs = elements.select("tr");
+			Element nameTr = trs.get(0);
+			Elements ths = nameTr.select("th");
+			int index = 0;
+			for (Element th : ths) {
+				String name = th.ownText();
+				if ("平时成绩".equals(name)) {
+					map.put("pscj", index);
+				} else if ("平时成绩比例".equals(name)) {
+					map.put("pscjBL", index);
+
+				} else if ("期末成绩".equals(name)) {
+					map.put("qmcj", index);
+
+				} else if ("期末成绩比例".equals(name)) {
+					map.put("qmcjBL", index);
+
+				} else if ("总成绩".equals(name)) {
+					map.put("totalScore", index);
+				} else if ("期中成绩".equals(name)) {
+					map.put("qzcj", index);
+				} else if ("期中成绩比例".equals(name)) {
+					map.put("qzcjBL", index);
+				}
+				index++;
+			}
+
 			Element pscjTr = trs.get(1);
 			Elements tds = pscjTr.select("td");
 			PscjInfo pscjInfo = new PscjInfo();
-			pscjInfo.setKscj(tds.get(7).ownText());
-			pscjInfo.setKscjBL(tds.get(8).ownText());
-			pscjInfo.setPscj(tds.get(3).ownText());
-			pscjInfo.setPscjBL(tds.get(4).ownText());
-			pscjInfo.setScore(tds.get(9).ownText());
+
+			Iterator<Map.Entry<String, Integer>> iterator = map.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry<String, Integer> entry = iterator.next();
+				String key = entry.getKey();
+				Integer value = entry.getValue();
+
+				if ("pscj".equals(key)) {
+					pscjInfo.setPscj(tds.get(value).ownText());
+				} else if ("pscjBL".equals(key)) {
+					pscjInfo.setPscjBL(tds.get(value).ownText());
+
+				} else if ("qmcj".equals(key)) {
+					pscjInfo.setQmcj(tds.get(value).ownText());
+
+				} else if ("qmcjBL".equals(key)) {
+					pscjInfo.setQmcjBL(tds.get(value).ownText());
+
+				} else if ("totalScore".equals(key)) {
+					pscjInfo.setScore(tds.get(value).ownText());
+
+				} else if ("qzcj".equals(key)) {
+					pscjInfo.setQzcj(tds.get(value).ownText());
+
+				} else if ("qzcjBL".equals(key)) {
+					pscjInfo.setQzcjBL(tds.get(value).ownText());
+				}
+			}
+
+//			pscjInfo.setKscj(tds.get(7).ownText());
+//			pscjInfo.setKscjBL(tds.get(8).ownText());
+//			pscjInfo.setPscj(tds.get(3).ownText());
+//			pscjInfo.setPscjBL(tds.get(4).ownText());
+//			pscjInfo.setScore(tds.get(9).ownText());
 			return ReturnData.success(pscjInfo);
 		} catch (Exception e) {
 			throw new BaseException(CodeEnum.REQUEST_FAILED.getCode(), "请求错误");

@@ -22,14 +22,22 @@ public class PscjInfo {
 	private String pscjBL;
 
 	/**
-	 * 考试成绩
+	 * 期末成绩
 	 */
-	private String kscj;
+	private String qmcj;
 
 	/**
-	 * 考试成绩比例
+	 * 期末成绩比例
 	 */
-	private String kscjBL;
+	private String qmcjBL;
+	/**
+	 * 期中成绩
+	 */
+	private String qzcj;
+	/**
+	 * 期中成绩比例
+	 */
+	private String qzcjBL;
 
 	/**
 	 * 总成绩
