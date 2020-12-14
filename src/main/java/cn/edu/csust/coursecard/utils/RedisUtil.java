@@ -169,6 +169,7 @@ public class RedisUtil {
             return false;
         }
     }
+
     public boolean setObject(String key, Object value) {
         try {
             redisTemplate.opsForValue().set(key, value);
@@ -178,6 +179,7 @@ public class RedisUtil {
             return false;
         }
     }
+
     public Object getObject(String key) {
         try {
             return redisTemplate.opsForValue().get(key);

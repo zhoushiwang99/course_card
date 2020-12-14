@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author zsw
@@ -34,6 +35,4 @@ public interface StuInfoDAO {
      */
     @Select({"select",SELECT_FIELDS,"from",TABLE_NAME,"where stu_id = #{stuId}"})
     StuInfo selectStuInfoByStuId(String stuId);
-
-
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.validation.ConstraintViolationException;
@@ -19,7 +20,7 @@ import javax.validation.ConstraintViolationException;
  * @author zsw
  * @date 2019/6/21 16:07
  */
-@ControllerAdvice
+@RestControllerAdvice
 @Slf4j
 public class ExceptionResolver {
     /**
@@ -37,7 +38,7 @@ public class ExceptionResolver {
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
     public ReturnData ExceptionHandler(Exception e) {
-        e.printStackTrace();
+//        e.printStackTrace();
         log.error("------------->Exception未捕获异常: {}", e.getMessage());
         return ReturnData.fail(CodeEnum.SYSTEM_ERROR.getCode(), e.getMessage());
     }
@@ -45,7 +46,7 @@ public class ExceptionResolver {
     @ResponseBody
     @ExceptionHandler(value = {ConstraintViolationException.class, BindException.class, ServletRequestBindingException.class, MethodArgumentNotValidException.class})
     public ReturnData ConstraintViolationExceptionHandler(Exception e) {
-
+//        e.printStackTrace();
         log.error("-------------->参数异常 {}", e.getMessage());
         return ReturnData.fail(CodeEnum.REQUEST_FAILED.getCode(),"参数异常");
     }

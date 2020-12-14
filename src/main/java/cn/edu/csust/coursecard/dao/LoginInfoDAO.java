@@ -5,6 +5,9 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,14 +18,14 @@ import java.util.List;
 @Mapper
 public interface LoginInfoDAO {
 
-	String TABLE_NAME = "login_info";
-	String INSERT_FIELDS = "user_id,login_time,agent";
+    String TABLE_NAME = "login_info";
+    String INSERT_FIELDS = "user_id,login_time,agent";
 
-	@Insert({"<script> " +
-			"insert into",TABLE_NAME,"(",INSERT_FIELDS,") " +
-			"values " +
-			"<foreach item='info' collection = 'loginInfoList' separator=','>(#{info.userId},#{info.loginTime},#{info.agent})</foreach>" +
-			"</script>"})
-	void insertLoginInfos(@Param("loginInfoList") List<LoginInfo> loginInfoList);
+    @Insert({"<script> " +
+            "insert into", TABLE_NAME, "(", INSERT_FIELDS, ") " +
+            "values " +
+            "<foreach item='info' collection = 'loginInfoList' separator=','>(#{info.userId},#{info.loginTime},#{info.agent})</foreach>" +
+            "</script>"})
+    void insertLoginInfos(@Param("loginInfoList") List<LoginInfo> loginInfoList);
 
 }

@@ -124,7 +124,8 @@ public class HeadImgServiceImpl implements HeadImgService {
             File w2 = new File("C:\\Users\\zsw\\Desktop\\1.jpg");//可以是jpg,png,gif格式
             ImageIO.write(bi1, "jpg", w2);//不管输出什么格式图片，此处不需改动
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            log.error(e.getMessage());
         }finally{
             bais.close();
         }
