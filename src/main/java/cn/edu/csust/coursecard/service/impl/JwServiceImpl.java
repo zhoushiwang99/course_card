@@ -308,13 +308,17 @@ public class JwServiceImpl implements JwService {
         try {
             Response response = okHttpClient.newCall(getKsapRequest).execute();
             String htmlText = response.body().string();
+//            System.out.println(htmlText);
             Document document = Jsoup.parse(htmlText);
             response.close();
             Element dataList = document.getElementById("dataList");
             Elements trs = dataList.select("tr");
 
             List<Exam> examList = new LinkedList<>();
-            if (trs.size() < 2) {
+            /*if (trs.size() < 2) {
+                return ReturnData.fail(CodeEnum.REQUEST_FAILED.getCode(), "教务系统暂无该学期的考试安排");
+            }*/
+            if (trs.size() < 2 || "未查询到数据".equals(trs.get(1).text())) {
                 return ReturnData.fail(CodeEnum.REQUEST_FAILED.getCode(), "教务系统暂无该学期的考试安排");
             }
 
