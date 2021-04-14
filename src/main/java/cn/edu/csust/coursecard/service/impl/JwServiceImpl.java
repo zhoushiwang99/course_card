@@ -3,6 +3,7 @@ package cn.edu.csust.coursecard.service.impl;
 import cn.edu.csust.coursecard.bean.*;
 import cn.edu.csust.coursecard.common.CodeEnum;
 import cn.edu.csust.coursecard.common.ReturnData;
+import cn.edu.csust.coursecard.dao.LoginInfoDAO;
 import cn.edu.csust.coursecard.dao.ScoreDAO;
 import cn.edu.csust.coursecard.dao.StuInfoDAO;
 import cn.edu.csust.coursecard.exception.BaseException;
@@ -26,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 /**
@@ -42,8 +45,18 @@ public class JwServiceImpl implements JwService {
     @Autowired
     RedisUtil redisUtil;
 
+    @Autowired
+    LoginInfoDAO loginInfoDAO;
+
     private String defaultHeadImageDirect;
 
+
+    private static final ExecutorService executorService;
+
+
+    static {
+        executorService = Executors.newSingleThreadExecutor();
+    }
 
     /**
      * 从教务系统获取code的url
@@ -267,13 +280,15 @@ public class JwServiceImpl implements JwService {
                         data.put("nowWeek", nowWeekDate[0]);
                         data.put("totalWeek", nowWeekDate[1]);
 
-                        List<LoginInfo> loginInfos = (List<LoginInfo>) redisUtil.getObject(ScheduledTasks.LOGIN_INFO_PREFIX);
-                        LoginInfo loginInfo = LoginInfo.builder().userId(stuInfo.getId()).loginTime(new Date()).agent(agent).build();
-                        loginInfos.add(loginInfo);
-                        redisUtil.setObject(ScheduledTasks.LOGIN_INFO_PREFIX, loginInfos);
+
                         redisUtil.set(USER_TOKEN_PREFIX + token, String.valueOf(stuInfo.getId()), TOKEN_EXPIRE);
                         redisUtil.set(USER_ID_PREFIX + stuInfo.getId(), token, TOKEN_EXPIRE);
                         redisUtil.set(USER_STUID_PREFIX + stuInfo.getId(), stuInfo.getStuId(), TOKEN_EXPIRE);
+
+                        // 使用线程池将登陆日志保存到数据库
+                        LoginInfo loginInfo = LoginInfo.builder().userId(stuInfo.getId()).loginTime(new Date()).agent(agent).build();
+                        LoginLogTask task = new LoginLogTask(loginInfo,loginInfoDAO);
+                        executorService.execute(task);
                         return ReturnData.success(data);
                     }
                 }

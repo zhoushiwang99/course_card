@@ -26,7 +26,7 @@ public class ScheduledTasks {
 
 	public static String LOGIN_INFO_PREFIX = "login:list";
 
-//	@Scheduled(cron = "0 0 2 * * ?")
+/*
 	@Scheduled(fixedRate = 60 * 1000 * 30)
 	public void test() {
 		Object obj = redisUtill.getObject(LOGIN_INFO_PREFIX);
@@ -45,5 +45,5 @@ public class ScheduledTasks {
 			List<LoginInfo> loginInfos = new LinkedList<>();
 			redisUtill.setObject(LOGIN_INFO_PREFIX, loginInfos);
 		}
-	}
+	}*/
 }

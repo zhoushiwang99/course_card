@@ -28,4 +28,8 @@ public interface LoginInfoDAO {
             "</script>"})
     void insertLoginInfos(@Param("loginInfoList") List<LoginInfo> loginInfoList);
 
+
+    @Insert({"insert into ",TABLE_NAME,"(" + INSERT_FIELDS + ") values (#{info.userId},#{info.loginTime},#{info.agent})" })
+    void insertLoginInfo(@Param("info") LoginInfo loginInfo);
+
 }
