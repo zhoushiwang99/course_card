@@ -1,11 +1,9 @@
 package cn.edu.csust.coursecard.dao;
 
 import cn.edu.csust.coursecard.bean.StuInfo;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 /**
  * @author zsw
@@ -17,7 +15,7 @@ public interface StuInfoDAO {
 
     String TABLE_NAME = "stu_info";
     String INSERT_FIELDS = "stu_id,name,college,major,class_name,register_time";
-    String SELECT_FIELDS ="id,stu_id,name,college,major,class_name";
+    String SELECT_FIELDS ="id,stu_id,name,college,major,class_name,app_version";
 
     /**
      * 插入一条学生信息
@@ -35,4 +33,14 @@ public interface StuInfoDAO {
      */
     @Select({"select",SELECT_FIELDS,"from",TABLE_NAME,"where stu_id = #{stuId}"})
     StuInfo selectStuInfoByStuId(String stuId);
+
+    @Select({"select","id from",TABLE_NAME,"where app_version != #{version}"})
+    List<Integer> selectOldAppUserIdList(@Param("version") String lastestVersion);
+
+    @Select({"select 1 from ", TABLE_NAME,"where id = #{userId} limit 1"})
+    Integer selectIfUserIdExist(Integer userId);
+
+    @Update({"update",TABLE_NAME,"set app_version = #{version} where id = #{userId}"})
+    Integer updateUserAppVersionByUserId(@Param("userId") Integer userId,@Param("version") String version);
+
 }

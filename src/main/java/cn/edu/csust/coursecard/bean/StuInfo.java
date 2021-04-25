@@ -23,4 +23,5 @@ public class StuInfo {
     private String major;
     private String className;
     private Date registerTime;
+    private String appVersion;
 }

@@ -38,8 +38,7 @@ public class ExceptionResolver {
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
     public ReturnData ExceptionHandler(Exception e) {
-//        e.printStackTrace();
-        log.error("------------->Exception未捕获异常: {}", e.getMessage());
+        e.printStackTrace();
         return ReturnData.fail(CodeEnum.SYSTEM_ERROR.getCode(), e.getMessage());
     }
 

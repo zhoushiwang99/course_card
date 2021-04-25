@@ -20,6 +20,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     @Autowired
     RedisUtil redisUtil;
 
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getHeader("token");
@@ -36,6 +37,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         redisUtil.set(JwService.USER_ID_PREFIX+ userId.toString(), token,JwService.TOKEN_EXPIRE);
         redisUtil.set(JwService.USER_TOKEN_PREFIX + token, userId.toString(), JwService.TOKEN_EXPIRE);
         redisUtil.set(JwService.USER_STUID_PREFIX+userId,stuId.toString(),JwService.TOKEN_EXPIRE);
+
         request.setAttribute("userId",userId);
         request.setAttribute("stuId",stuId);
         return true;

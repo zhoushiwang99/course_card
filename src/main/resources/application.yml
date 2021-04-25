@@ -1,68 +1,69 @@
+my:
+  config:
+    exclude-uri: [ /login,/getLastVersion,/apk/**,/admin/** ]
+    include-uri: [ /** ]
+  image:
+    default-head-direct: /home/zyh/course_card/img/defaultHead/
+    head-image-direct: /home/zyh/course_card/img/headImg/
+  host: 127.0.0.1
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath*:dao/*.xml
+
 pagehelper:
   helperDialect: mysql
+  params: count=countSql
   reasonable: true
   supportMethodsArguments: true
-  params: count=countSql
 
+
+
+server:
+  port: 8081
 spring:
+  datasource:
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    filters: stat,wall
+    initialSize: 5
+    maxActive: 20
+    maxPoolPreparedStatementPerConnectionSize: 20
+    maxWait: 60000
+    minEvictableIdleTimeMillis: 300000
+    minIdle: 5
+    password: 123456
+    poolPreparedStatements: true
+    testOnBorrow: false
+    testOnReturn: false
+    testWhileIdle: true
+    timeBetweenEvictionRunsMillis: 60000
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://127.0.0.1:3306/course_card?useUnDruidDataSourceicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useSSL=false
+    useGlobalDataSourceStat: true
+    username: root
+    validationQuery: SELECT 1 FROM DUAL
+  mvc:
+    throw-exception-if-no-handler-found: true
+  redis:
+    host: 127.0.0.1
+    password: 123456
+    port: 6379
+    timeout: 1000
+  resources:
+    add-mappings: false
   servlet:
     multipart:
       max-file-size: 100MB
       max-request-size: 500MB
-  redis:
-    port: 6379
-    host: 47.106.159.165
-    timeout: 1000
-    password: 123456
   session:
     store-type: none
-  datasource:
-    username: root
-    password: 123456
-    url: jdbc:mysql://47.106.159.165:3306/course_card?useUnDruidDataSourceicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&useSSL=false
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    type: com.alibaba.druid.pool.DruidDataSource
 
-    initialSize: 5
-    minIdle: 5
-    maxActive: 20
-    maxWait: 60000
-    timeBetweenEvictionRunsMillis: 60000
-    minEvictableIdleTimeMillis: 300000
-    validationQuery: SELECT 1 FROM DUAL
-    testWhileIdle: true
-    testOnBorrow: false
-    testOnReturn: false
-    poolPreparedStatements: true
-    filters: stat,wall
-    maxPoolPreparedStatementPerConnectionSize: 20
-    useGlobalDataSourceStat: true
-    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
-  mvc:
-    throw-exception-if-no-handler-found: true
-
-  resources:
-    add-mappings: false
-
-server:
-  port: 8081
-
-mybatis:
-  configuration:
-    map-underscore-to-camel-case: true
-
-my:
-  config:
-    include-uri:
-      - /**
-    exclude-uri:
-      - /login
-      - /getLastVersion
-      - /apk/**
-  image:
-#    default-head-direct: D:\img\coursecard\defaultHead\
-    ##默认头像文件夹
-    default-head-direct: /home/zyh/course_card/img/defaultHead/
-#    head-image-direct: D:\img\coursecard\headImg\
-    ##自定义头像文件夹
-    head-image-direct: /home/zyh/course_card/img/headImg/
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    consumer:
+      group-id: default_consumer_group
+      enable-auto-commit: true
+      auto-commit-interval: 3000
+    listener:
+      missing-topics-fatal: false

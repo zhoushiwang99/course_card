@@ -8,7 +8,6 @@ import cn.edu.csust.coursecard.dao.ScoreDAO;
 import cn.edu.csust.coursecard.dao.StuInfoDAO;
 import cn.edu.csust.coursecard.exception.BaseException;
 import cn.edu.csust.coursecard.service.JwService;
-import cn.edu.csust.coursecard.task.ScheduledTasks;
 import cn.edu.csust.coursecard.utils.CalendarUtil;
 import cn.edu.csust.coursecard.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -287,8 +286,12 @@ public class JwServiceImpl implements JwService {
 
                         // 使用线程池将登陆日志保存到数据库
                         LoginInfo loginInfo = LoginInfo.builder().userId(stuInfo.getId()).loginTime(new Date()).agent(agent).build();
-                        LoginLogTask task = new LoginLogTask(loginInfo,loginInfoDAO);
+                        LoginLogTask task = new LoginLogTask(loginInfo, loginInfoDAO);
                         executorService.execute(task);
+
+                        if (agent != null && !agent.equals(stuInfo.getAppVersion())) {
+                            stuInfoDAO.updateUserAppVersionByUserId(stuInfo.getId(), agent);
+                        }
                         return ReturnData.success(data);
                     }
                 }
@@ -465,9 +468,9 @@ public class JwServiceImpl implements JwService {
                 }
                 String stuId = String.valueOf(request.getAttribute("stuId"));
                 //todo
-                /*if (scoreDAO.selectScore(stuId, score.getCourseName(), score.getType()) == null) {
+                if (scoreDAO.selectScore(stuId, score.getCourseName(), score.getType()) == null) {
                     scoreDAO.insertScore(stuId, score); //成绩插入数据库（仅用于开发者个人用于算综测，平时环境无此功能
-                }*/
+                }
                 scoreList.add(score);
             }
             return ReturnData.success(scoreList);

@@ -27,7 +27,6 @@ public class VersionController {
 
     @GetMapping("/getLastVersion")
     public ReturnData getLastVersion() {
-        System.out.println(host + ":" + port);
         Version lastVersion = versionDAO.getLastVersion();
         if (lastVersion == null) {
             return ReturnData.fail(CodeEnum.SYSTEM_ERROR.getCode(), "暂无apk下载");
