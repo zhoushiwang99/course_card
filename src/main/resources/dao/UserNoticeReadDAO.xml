@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.csust.coursecard.dao.UserNoticeReadDAO">
+
+    <resultMap id="BaseResultMap" type="cn.edu.csust.coursecard.bean.UserNoticeRead">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="noticeId" column="notice_id" jdbcType="INTEGER"/>
+            <result property="readTime" column="read_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,notice_id,
+        read_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from user_notice_read
+        where  id = #{id,jdbcType=INTEGER} 
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from user_notice_read
+        where  id = #{id,jdbcType=INTEGER} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.edu.csust.coursecard.bean.UserNoticeRead" useGeneratedKeys="true">
+        replace into user_notice_read
+        (user_id,notice_id
+        ,read_time)
+        values (#{userId,jdbcType=INTEGER},#{noticeId,jdbcType=INTEGER}
+        ,#{readTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="cn.edu.csust.coursecard.bean.UserNoticeRead">
+        update user_notice_read
+        <set>
+                <if test="userId != null">
+                    user_id = #{userId,jdbcType=INTEGER},
+                </if>
+                <if test="noticeId != null">
+                    notice_id = #{noticeId,jdbcType=INTEGER},
+                </if>
+                <if test="readTime != null">
+                    read_time = #{readTime,jdbcType=TIMESTAMP},
+                </if>
+        </set>
+        where   id = #{id,jdbcType=INTEGER} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.edu.csust.coursecard.bean.UserNoticeRead">
+        update user_notice_read
+        set 
+            user_id =  #{userId,jdbcType=INTEGER},
+            notice_id =  #{noticeId,jdbcType=INTEGER},
+            read_time =  #{readTime,jdbcType=TIMESTAMP}
+        where   id = #{id,jdbcType=INTEGER} 
+    </update>
+    <select id="selectHasUserReadTheNotice" resultType="java.lang.Integer">
+        select 1 from user_notice_read
+        where user_id = #{userId} and notice_id = #{noticeId} limit 1
+    </select>
+</mapper>

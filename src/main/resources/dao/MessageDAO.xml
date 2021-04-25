@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.csust.coursecard.dao.MessageDAO">
+
+    <resultMap id="BaseResultMap" type="cn.edu.csust.coursecard.bean.Message">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="fromId" column="from_id" jdbcType="INTEGER"/>
+        <result property="toId" column="to_id" jdbcType="INTEGER"/>
+        <result property="conversationId" column="conversation_id" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,from_id,to_id,
+        conversation_id,content,create_time,
+        status
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from message
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByToIdAndStatus" resultType="cn.edu.csust.coursecard.bean.Message">
+        select
+        <include refid="Base_Column_List"/>
+        from message
+        where to_id = #{toId} and status = #{status}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from message
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.edu.csust.coursecard.bean.Message"
+            useGeneratedKeys="true">
+        replace into message
+        ( id, from_id, to_id
+        , conversation_id, content, create_time
+        , status)
+        values ( #{id,jdbcType=INTEGER}, #{fromId,jdbcType=INTEGER}, #{toId,jdbcType=INTEGER}
+               , #{conversationId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+               , #{status,jdbcType=VARCHAR})
+    </insert>
+
+</mapper>
