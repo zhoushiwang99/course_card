@@ -18,6 +18,8 @@ public class Message implements Serializable {
      */
     private Integer id;
 
+    private Integer noticeId;
+
     /**
      * 
      */

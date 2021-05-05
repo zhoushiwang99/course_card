@@ -468,9 +468,9 @@ public class JwServiceImpl implements JwService {
                 }
                 String stuId = String.valueOf(request.getAttribute("stuId"));
                 //todo
-                if (scoreDAO.selectScore(stuId, score.getCourseName(), score.getType()) == null) {
+                /*if (scoreDAO.selectScore(stuId, score.getCourseName(), score.getType()) == null) {
                     scoreDAO.insertScore(stuId, score); //成绩插入数据库（仅用于开发者个人用于算综测，平时环境无此功能
-                }
+                }*/
                 scoreList.add(score);
             }
             return ReturnData.success(scoreList);

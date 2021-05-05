@@ -26,15 +26,6 @@
         where id = #{id,jdbcType=INTEGER}
     </select>
 
-    <select id="selectRecentNotReadNoticeToAll" resultType="cn.edu.csust.coursecard.bean.Notice">
-        select
-        <include refid="Base_Column_List"/>
-        where id in (
-        select id
-        from notice
-        where target = 'all' and DATEDIFF(create_time,NOW()) &lt;=0 AND DATEDIFF(create_time,NOW()) &gt;= -1 and select
-        count(id) from user_notice_read where )
-    </select>
 
     <select id="selectRecent30DaysNoticeToAll" resultType="java.lang.Integer">
         select id

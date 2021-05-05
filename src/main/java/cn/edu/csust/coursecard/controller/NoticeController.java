@@ -33,7 +33,7 @@ public class NoticeController {
     @Autowired
     StuInfoDAO stuInfoDAO;
 
-    @PostMapping("/admin/sendNoticeToALl")
+    @PostMapping("/admin/sendNoticeToAll")
     public ReturnData sendNoticeToAll(@RequestParam("token") String token, String content) {
         if (!ADMIN_NOTICE_TOKEN.equals(token)) {
             return ReturnData.fail(CodeEnum.REQUEST_FAILED.getCode(), "请校验token");

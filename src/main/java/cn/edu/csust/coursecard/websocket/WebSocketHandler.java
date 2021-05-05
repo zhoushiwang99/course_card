@@ -1,7 +1,9 @@
 package cn.edu.csust.coursecard.websocket;
 
 import cn.edu.csust.coursecard.bean.Message;
+import cn.edu.csust.coursecard.bean.UserNoticeRead;
 import cn.edu.csust.coursecard.dao.MessageDAO;
+import cn.edu.csust.coursecard.dao.UserNoticeReadDAO;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +30,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Autowired
     MessageDAO messageDAO;
 
+    @Autowired
+    UserNoticeReadDAO userNoticeReadDAO;
+
     /**
      * 当前在线人数
      */
     private static final AtomicInteger onlineNum = new AtomicInteger();
-
 
 
     private static final ConcurrentHashMap<Integer, WebSocketSession> SESSION_POOLS = new ConcurrentHashMap<>();
@@ -67,7 +71,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
      *
      * @param message
      */
-    public  void sendMessageToAllOnline(Message message) {
+    public void sendMessageToAllOnline(Message message) {
         for (Map.Entry<Integer, WebSocketSession> entry : SESSION_POOLS.entrySet()) {
             // 每次发送都要标记消息为未读
             message.setStatus(0);
@@ -80,6 +84,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 entry.getValue().sendMessage(new TextMessage(JSON.toJSONString(message)));
                 // 发送成功，设置消息为已读
                 message.setStatus(1);
+                if (message.getNoticeId() != null) {
+                    userNoticeReadDAO.insert(UserNoticeRead.builder().noticeId(message.getNoticeId()).userId(entry.getKey()).readTime(new Date()).build());
+                }
                 messageDAO.insert(message);
             } catch (IOException e) {
                 log.error("发送消息失败");
@@ -114,7 +121,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         Map<String, Object> attributes = session.getAttributes();
-        Integer userId = Integer.valueOf((String)attributes.get("userId"));
+        Integer userId = Integer.valueOf((String) attributes.get("userId"));
         log.info("用户" + userId + "已连接");
         onlineNum.incrementAndGet();
         // 将当前session加入会话池
