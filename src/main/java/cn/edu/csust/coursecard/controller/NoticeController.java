@@ -40,7 +40,7 @@ public class NoticeController {
         }
         Notice notice = Notice.builder().content(content).createTime(new Date()).target("all").build();
         noticeDAO.insert(notice);
-        Message message = Message.builder().fromId(0).createTime(new Date()).content(content).build();
+        Message message = Message.builder().fromId(0).createTime(new Date()).noticeId(notice.getId()).content(content).build();
         messageProducer.fireMessage("SystemNotice", message);
 //        webSocketHandler.sendMessageToAllOnline(message);
         return ReturnData.success();
